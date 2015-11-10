@@ -13,6 +13,8 @@ public class Main
 	private Scanner inputScanner;
 	private String[] commandHelp;
 	private String input;
+	private DatabaseWriter writer;
+	private DatabaseReader reader;
 	
 	/**
 	 * The sole constructor for the Main class.
@@ -26,7 +28,7 @@ public class Main
 				"INSERT student_number first_name last_name home_form [mark1 ... mark8]",
 				"DELETE condition",
 				"SHOW [max_entries]",
-				"SORT [student_number | first_name | last_name | home_form | average]",
+				"SORT [student_number | name | home_form | average]",
 				"FIND condition"
 		};
 		getUserInput();
@@ -59,9 +61,17 @@ public class Main
 			try {
 				create(args);
 			} catch (IllegalArgumentException e) {
-				System.err.println("table_name must not be empty");
+				System.err.println(e.getMessage());
 			} catch (IOException e) {
-				System.err.println("table_name is invalid");
+				System.err.println(e.getMessage());
+			}
+		} else if (args[0].equalsIgnoreCase("FOCUS")) {
+			try {
+				focus(args);
+			} catch (IllegalArgumentException e) {
+				System.err.println(e.getMessage());
+			} catch (IOException e) {
+				System.err.println(e.getMessage());
 			}
 		} else {
 			System.out.println("Type help or '?' for a list of available commands");
@@ -71,15 +81,40 @@ public class Main
 	private void create(String[] args) throws IllegalArgumentException, IOException
 	{
 		if (args.length < 2)
-			throw new IllegalArgumentException();
+			throw new IllegalArgumentException("table_name must not be empty");
+		
 		if (args[1].matches("[/\\\\]+"))
-			throw new IOException();
+			throw new IOException("table_name is invalid");
 		
 		String fileName = "tables" + File.separator + args[1] + ".csv";
 		File file = new File(fileName);
+		
+		if (file.exists())
+			throw new IOException("table_name already exists");
+		
 		file.getParentFile().mkdirs();
 		file.createNewFile();
-		System.out.println(file.getAbsolutePath());
+	}
+	
+	private void focus(String[] args) throws IllegalArgumentException, IOException
+	{
+		if (args.length < 2)
+			throw new IllegalArgumentException("table_name must not be empty");
+		
+		String fileName = "tables" + File.separator + args[1] + ".csv";
+		File file = new File(fileName);
+		
+		if (!file.exists())
+			throw new IOException("table_name does not exist");
+		
+		if (writer != null)
+			writer.close();
+		
+		if (reader != null)
+			reader.close();
+		
+		writer = new DatabaseWriter(file);
+		reader = new DatabaseReader(file);
 	}
 	
 	private void displayCommandHelp()

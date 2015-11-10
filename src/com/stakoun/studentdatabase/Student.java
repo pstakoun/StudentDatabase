@@ -17,7 +17,12 @@ public class Student
 	 */
 	public Student()
 	{
-		
+		// TODO
+	}
+
+	public String toCSV()
+	{
+		return null; // TODO
 	}
 
 }
