@@ -25,6 +25,8 @@ public class Main
 				"FOCUS table_name",
 				"INSERT student_number first_name last_name home_form [mark1 ... mark8]",
 				"DELETE condition",
+				"SHOW [max_entries]",
+				"SORT [student_number | first_name | last_name | home_form | average]",
 				"FIND condition"
 		};
 		getUserInput();
