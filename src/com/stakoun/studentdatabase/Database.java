@@ -73,6 +73,14 @@ public class Database
 			} catch (IOException e) {
 				System.err.println(e.getMessage());
 			}
+		} else if (args[0].equalsIgnoreCase("INSERT")) {
+			try {
+				insert(args);
+			} catch (IllegalArgumentException e) {
+				System.err.println(e.getMessage());
+			} catch (IOException e) {
+				System.err.println(e.getMessage());
+			}
 		} else {
 			System.out.println("Type help or '?' for a list of available commands");
 		}
@@ -115,6 +123,29 @@ public class Database
 		
 		writer = new DatabaseWriter(file);
 		reader = new DatabaseReader(file);
+	}
+	
+	private void insert(String[] args) throws IllegalArgumentException, IOException
+	{
+		if (args.length < 5)
+			throw new IllegalArgumentException("Usage: INSERT student_number first_name last_name home_form [mark1 ... mark8]");
+	
+		int student_number = Integer.parseInt(args[1]);
+		String first_name = args[2];
+		String last_name = args[3];
+		String home_form = args[4];
+		
+		int numMarks = args.length - 5;
+		int[] marks = new int[numMarks];
+		for (int i = 0; i < numMarks; i++)
+			marks[i] = Integer.parseInt(args[i+5]);
+		
+		Student student = new Student();
+		
+		if (writer == null)
+			throw new IOException("no active table found");
+	
+		writer.addStudent(student);
 	}
 	
 	private void displayCommandHelp()
