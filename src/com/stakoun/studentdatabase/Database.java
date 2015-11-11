@@ -8,7 +8,7 @@ import java.util.Scanner;
  * The Main class initializes the database configuration and controls program flow.
  * @author Peter Stakoun
  */
-public class Main
+public class Database
 {
 	private Scanner inputScanner;
 	private String[] commandHelp;
@@ -19,7 +19,7 @@ public class Main
 	/**
 	 * The sole constructor for the Main class.
 	 */
-	public Main()
+	public Database()
 	{
 		inputScanner = new Scanner(System.in);
 		commandHelp = new String[] {
@@ -40,7 +40,7 @@ public class Main
 	 */
 	public static void main(String[] args)
 	{
-		new Main();
+		new Database();
 	}
 	
 	private void getUserInput()
