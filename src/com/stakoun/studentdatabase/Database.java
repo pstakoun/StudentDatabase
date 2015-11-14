@@ -91,7 +91,7 @@ public class Database
 		if (args.length < 2)
 			throw new IllegalArgumentException("table_name must not be empty");
 		
-		if (args[1].matches("[/\\\\]+"))
+		if (args[1].contains("/") || args[1].contains("\\"))
 			throw new IOException("table_name is invalid");
 		
 		String fileName = "tables" + File.separator + args[1] + ".csv";
@@ -129,18 +129,30 @@ public class Database
 	{
 		if (args.length < 5)
 			throw new IllegalArgumentException("Usage: INSERT student_number first_name last_name home_form [mark1 ... mark8]");
-	
-		int student_number = Integer.parseInt(args[1]);
+		
+		int student_number;
+		
+		try {
+			student_number = Integer.parseInt(args[1]);
+		} catch (NumberFormatException e) {
+			throw new IllegalArgumentException("Usage: INSERT student_number first_name last_name home_form [mark1 ... mark8]");
+		}
+		
 		String first_name = args[2];
 		String last_name = args[3];
 		String home_form = args[4];
 		
 		int numMarks = args.length - 5;
 		int[] marks = new int[numMarks];
-		for (int i = 0; i < numMarks; i++)
-			marks[i] = Integer.parseInt(args[i+5]);
 		
-		Student student = new Student();
+		try {
+			for (int i = 0; i < numMarks; i++)
+				marks[i] = Integer.parseInt(args[i+5]);
+		} catch (NumberFormatException e) {
+			throw new IllegalArgumentException("Usage: INSERT student_number first_name last_name home_form [mark1 ... mark8]");
+		}
+		
+		Student student = new Student(student_number, first_name, last_name, home_form, marks);
 		
 		if (writer == null)
 			throw new IOException("no active table found");

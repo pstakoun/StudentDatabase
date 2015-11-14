@@ -10,8 +10,8 @@ import java.io.IOException;
  */
 public class DatabaseWriter
 {
-	private static final String sep = ",";
-	private static final String LF = "\n";
+	public static final String sep = ",";
+	public static final String LF = "\n";
 	private FileWriter writer;
 	
 	/**
@@ -21,26 +21,19 @@ public class DatabaseWriter
 	 */
 	public DatabaseWriter(File file) throws IOException
 	{
-		writer = new FileWriter(file);
+		writer = new FileWriter(file, true);
 	}
 	
-	public void addStudent(Student student)
+	public void addStudent(Student student) throws IOException
 	{
-		try {
-			writer.append(student.toCSV());
-		} catch (IOException e) {
-			System.err.println(e.getMessage());
-		}
+		writer.append(student.toCSV());
+		writer.flush();
 	}
 	
-	public void close()
+	public void close() throws IOException
 	{
-		try {
-			writer.flush();
-			writer.close();
-		} catch (IOException e) {
-			System.err.println(e.getMessage());
-		}
+		writer.flush();
+		writer.close();
 	}
 
 }

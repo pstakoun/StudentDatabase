@@ -2,6 +2,7 @@ package com.stakoun.studentdatabase;
 
 import java.io.BufferedReader;
 import java.io.File;
+import java.io.FileNotFoundException;
 import java.io.FileReader;
 import java.io.IOException;
 
@@ -12,7 +13,9 @@ import java.io.IOException;
 public class DatabaseReader
 {
 	private static final String sep = ",";
+	private File file;
 	private BufferedReader reader;
+	private Student[] students;
 	
 	/**
 	 * The sole constructor for the DatabaseReader class.
@@ -21,31 +24,56 @@ public class DatabaseReader
 	 */
 	public DatabaseReader(File file) throws IOException
 	{
-		reader = new BufferedReader(new FileReader(file));
+		this.file = file;
+		students = new Student[getLineCount()];
+		update();
 	}
 	
 	public Student[] getStudents()
 	{
-		return null; // TODO
+		return students;
 	}
 	
 	public Student[] getStudents(int limit)
 	{
-		return null; // TODO
+		Student[] subarray = new Student[limit];
+		for (int i = 0; i < limit; i++)
+			subarray[i] = students[i];
+		return subarray;
 	}
 	
-	public void close()
+	private int getLineCount() throws IOException
 	{
-		try {
-			reader.close();
-		} catch (IOException e) {
-			System.err.println(e.getMessage());
-		}
+		open();
+		int count = 0;
+		while (reader.readLine() != null) count++;
+		close();
+		return count;
 	}
 	
-	private int getLineCount()
+	private void open() throws FileNotFoundException
 	{
-		return -1; // TODO
+		reader = new BufferedReader(new FileReader(file));
+	}
+	
+	private void update() throws IOException
+	{
+		int numStudents = getLineCount()-1;
+		if (numStudents < 0)
+			numStudents = 0;
+		open();
+		students = new Student[numStudents];
+		reader.readLine();
+		String line;
+		int i = 0;
+		while ((line = reader.readLine()) != null)
+			students[i++] = Student.fromCSV(line);
+		close();
+	}
+	
+	public void close() throws IOException
+	{
+		reader.close();
 	}
 
 }
