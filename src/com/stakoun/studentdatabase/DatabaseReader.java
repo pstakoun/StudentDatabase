@@ -2,7 +2,6 @@ package com.stakoun.studentdatabase;
 
 import java.io.BufferedReader;
 import java.io.File;
-import java.io.FileNotFoundException;
 import java.io.FileReader;
 import java.io.IOException;
 
@@ -51,7 +50,7 @@ public class DatabaseReader
 		return count;
 	}
 	
-	private void open() throws FileNotFoundException
+	private void open() throws IOException
 	{
 		reader = new BufferedReader(new FileReader(file));
 	}

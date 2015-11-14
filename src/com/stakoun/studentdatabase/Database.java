@@ -61,7 +61,7 @@ public class Database
 			try {
 				create(args);
 			} catch (IllegalArgumentException e) {
-				System.err.println(e.getMessage());
+				System.err.println("Usage: CREATE table_name");
 			} catch (IOException e) {
 				System.err.println(e.getMessage());
 			}
@@ -69,7 +69,7 @@ public class Database
 			try {
 				focus(args);
 			} catch (IllegalArgumentException e) {
-				System.err.println(e.getMessage());
+				System.err.println("Usage: FOCUS table_name");
 			} catch (IOException e) {
 				System.err.println(e.getMessage());
 			}
@@ -77,7 +77,7 @@ public class Database
 			try {
 				insert(args);
 			} catch (IllegalArgumentException e) {
-				System.err.println(e.getMessage());
+				System.err.println("Usage: INSERT student_number first_name last_name home_form [mark1 ... mark8]");
 			} catch (IOException e) {
 				System.err.println(e.getMessage());
 			}
@@ -89,7 +89,7 @@ public class Database
 	private void create(String[] args) throws IllegalArgumentException, IOException
 	{
 		if (args.length < 2)
-			throw new IllegalArgumentException("table_name must not be empty");
+			throw new IllegalArgumentException();
 		
 		if (args[1].contains("/") || args[1].contains("\\"))
 			throw new IOException("table_name is invalid");
@@ -102,24 +102,20 @@ public class Database
 		
 		file.getParentFile().mkdirs();
 		file.createNewFile();
+		
+		DatabaseWriter.initFile(file);
 	}
 	
 	private void focus(String[] args) throws IllegalArgumentException, IOException
 	{
 		if (args.length < 2)
-			throw new IllegalArgumentException("table_name must not be empty");
+			throw new IllegalArgumentException();
 		
 		String fileName = "tables" + File.separator + args[1] + ".csv";
 		File file = new File(fileName);
 		
 		if (!file.exists())
 			throw new IOException("table_name does not exist");
-		
-		if (writer != null)
-			writer.close();
-		
-		if (reader != null)
-			reader.close();
 		
 		writer = new DatabaseWriter(file);
 		reader = new DatabaseReader(file);
@@ -128,14 +124,14 @@ public class Database
 	private void insert(String[] args) throws IllegalArgumentException, IOException
 	{
 		if (args.length < 5)
-			throw new IllegalArgumentException("Usage: INSERT student_number first_name last_name home_form [mark1 ... mark8]");
+			throw new IllegalArgumentException();
 		
 		int student_number;
 		
 		try {
 			student_number = Integer.parseInt(args[1]);
 		} catch (NumberFormatException e) {
-			throw new IllegalArgumentException("Usage: INSERT student_number first_name last_name home_form [mark1 ... mark8]");
+			throw new IllegalArgumentException();
 		}
 		
 		String first_name = args[2];
@@ -149,7 +145,7 @@ public class Database
 			for (int i = 0; i < numMarks; i++)
 				marks[i] = Integer.parseInt(args[i+5]);
 		} catch (NumberFormatException e) {
-			throw new IllegalArgumentException("Usage: INSERT student_number first_name last_name home_form [mark1 ... mark8]");
+			throw new IllegalArgumentException();
 		}
 		
 		Student student = new Student(student_number, first_name, last_name, home_form, marks);
