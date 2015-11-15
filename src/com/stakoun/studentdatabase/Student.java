@@ -10,7 +10,7 @@ public class Student
 	private String first_name;
 	private String last_name;
 	private String home_form;
-	private int[] marks;
+	private Course[] courses;
 	
 	/**
 	 * The sole constructor for the Student class.
@@ -20,37 +20,37 @@ public class Student
 	 * @param first_name
 	 * @param student_number
 	 */
-	public Student(int student_number, String first_name, String last_name, String home_form, int[] marks)
+	public Student(int student_number, String first_name, String last_name, String home_form, Course[] courses)
 	{
 		this.student_number = student_number;
 		this.first_name = first_name;
 		this.last_name = last_name;
 		this.home_form = home_form;
-		this.marks = marks;
+		this.courses = courses;
 	}
 	
 	public int getAverage()
 	{
-		if (marks.length == 0)
+		if (courses.length == 0)
 			return 0;
 		
 		int sum = 0;
-		for (int m : marks)
-			sum += m;
+		for (Course c : courses)
+			sum += c.getMark();
 		
-		return sum/marks.length;
+		return sum/courses.length;
 	}
 
 	public String toString()
 	{
-		String strMarks = "[";
-		for (int i = 0; i < marks.length; i++) {
+		String strCourses = "[";
+		for (int i = 0; i < courses.length; i++) {
 			if (i > 0)
-				strMarks += ", ";
-			strMarks += marks[i];
+				strCourses += ", ";
+			strCourses += courses[i].toString();
 		}
-		strMarks += "]";
-		return "Student Number: " + student_number + " | Name: " + last_name + ", " + first_name + " | Home Form: " + home_form + " | Marks: " + strMarks + " | Average: " + getAverage();
+		strCourses += "]";
+		return "Student Number: " + student_number + " | Name: " + last_name + ", " + first_name + " | Home Form: " + home_form + " | Courses: " + strCourses + " | Average: " + getAverage();
 	}
 
 	public String toCSV()
@@ -58,11 +58,10 @@ public class Student
 		String sep = DatabaseWriter.sep;
 		String LF = DatabaseWriter.LF;
 		String csv = student_number + sep + first_name + sep + last_name + sep + home_form;
-		for (int i = 0; i < 8; i++)
-			if (i < marks.length)
-				csv += sep + marks[i];
-			else
-				csv += sep;
+		for (int i = 0; i < courses.length; i++) {
+			csv += sep + courses[i].getCode();
+			csv += sep + courses[i].getMark();
+		}
 		csv += LF;
 		return csv;
 	}
@@ -72,6 +71,9 @@ public class Student
 		String args[] = csv.split(DatabaseWriter.sep);
 		
 		if (args.length < 4)
+			throw new IllegalArgumentException();
+		
+		if (args.length % 2 != 0)
 			throw new IllegalArgumentException();
 		
 		int student_number;
@@ -84,19 +86,19 @@ public class Student
 		
 		String first_name = args[1];
 		String last_name = args[2];
-		String home_form = args[3];
+		String home_form = args[3];	
 		
-		int numMarks = args.length - 4;
-		int[] marks = new int[numMarks];
+		int numCourses = (args.length - 4)/2;
+		Course[] courses = new Course[numCourses];
 		
 		try {
-			for (int i = 0; i < numMarks; i++)
-				marks[i] = Integer.parseInt(args[i+4]);
+			for (int i = 0; i < numCourses; i++)
+				courses[i] = new Course(args[i*2+4], Integer.parseInt(args[i*2+5]));
 		} catch (NumberFormatException e) {
 			throw new IllegalArgumentException();
 		}
 		
-		Student student = new Student(student_number, first_name, last_name, home_form, marks);
+		Student student = new Student(student_number, first_name, last_name, home_form, courses);
 		
 		return student;
 	}

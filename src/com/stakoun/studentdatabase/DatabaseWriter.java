@@ -47,7 +47,8 @@ public class DatabaseWriter
 	{
 		FileWriter tempWriter = new FileWriter(tempFile);
 		tempWriter.append("student_number" + sep + "first_name" + sep + "last_name" + sep + "home_form" + sep +
-				"mark1" + sep + "mark2" + sep + "mark3" + sep + "mark4" + sep + "mark5" + sep + "mark6" + sep + "mark7" + sep + "mark8" + LF);
+				"course1" + sep + "mark1" + sep + "course2" + sep + "mark2" + sep + "course3" + sep + "mark3" + sep + "course4" + sep + "mark4" + sep +
+				"course5" + sep + "mark5" + sep + "course6" + sep + "mark6" + sep + "course7" + sep + "mark7" + sep + "course8" + sep + "mark8" + LF);
 		tempWriter.flush();
 		tempWriter.close();
 	}

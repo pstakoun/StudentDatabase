@@ -25,7 +25,7 @@ public class Database
 		commandHelp = new String[] {
 				"CREATE table_name",
 				"FOCUS table_name",
-				"INSERT student_number first_name last_name home_form [mark1 ... mark8]",
+				"INSERT student_number first_name last_name home_form [course1 mark1 ... course8 mark8]",
 				"DELETE condition",
 				"SHOW [max_entries]",
 				"SORT [student_number | name | home_form | average]",
@@ -147,7 +147,10 @@ public class Database
 	
 	private void insert(String[] args) throws IllegalArgumentException, IOException
 	{
-		if (args.length < 5 || args.length > 12)
+		if (args.length < 5 || args.length > 21)
+			throw new IllegalArgumentException();
+		
+		if (args.length % 2 != 1)
 			throw new IllegalArgumentException();
 		
 		if (writer == null)
@@ -165,17 +168,17 @@ public class Database
 		String last_name = args[3];
 		String home_form = args[4];
 		
-		int numMarks = args.length - 5;
-		int[] marks = new int[numMarks];
+		int numCourses = (args.length - 5)/2;
+		Course[] courses = new Course[numCourses];
 		
 		try {
-			for (int i = 0; i < numMarks; i++)
-				marks[i] = Integer.parseInt(args[i+5]);
+			for (int i = 0; i < numCourses; i++)
+				courses[i] = new Course(args[i*2+5], Integer.parseInt(args[i*2+6]));
 		} catch (NumberFormatException e) {
 			throw new IllegalArgumentException();
 		}
 		
-		Student student = new Student(student_number, first_name, last_name, home_form, marks);
+		Student student = new Student(student_number, first_name, last_name, home_form, courses);
 	
 		writer.addStudent(student);
 	}
