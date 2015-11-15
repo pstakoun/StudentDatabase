@@ -61,7 +61,7 @@ public class Database
 			try {
 				create(args);
 			} catch (IllegalArgumentException e) {
-				System.err.println("Usage: CREATE table_name");
+				System.err.println("Usage: " + commandHelp[0]);
 			} catch (IOException e) {
 				System.err.println(e.getMessage());
 			}
@@ -69,7 +69,7 @@ public class Database
 			try {
 				focus(args);
 			} catch (IllegalArgumentException e) {
-				System.err.println("Usage: FOCUS table_name");
+				System.err.println("Usage: " + commandHelp[1]);
 			} catch (IOException e) {
 				System.err.println(e.getMessage());
 			}
@@ -77,7 +77,31 @@ public class Database
 			try {
 				insert(args);
 			} catch (IllegalArgumentException e) {
-				System.err.println("Usage: INSERT student_number first_name last_name home_form [mark1 ... mark8]");
+				System.err.println("Usage: " + commandHelp[2]);
+			} catch (IOException e) {
+				System.err.println(e.getMessage());
+			}
+		} else if (args[0].equalsIgnoreCase("DELETE")) {
+			try {
+				delete(args);
+			} catch (IllegalArgumentException e) {
+				System.err.println("Usage: " + commandHelp[3]);
+			} catch (IOException e) {
+				System.err.println(e.getMessage());
+			}
+		} else if (args[0].equalsIgnoreCase("SHOW")) {
+			try {
+				show(args);
+			} catch (IllegalArgumentException e) {
+				System.err.println("Usage: " + commandHelp[4]);
+			} catch (IOException e) {
+				System.err.println(e.getMessage());
+			}
+		} else if (args[0].equalsIgnoreCase("FIND")) {
+			try {
+				find(args);
+			} catch (IllegalArgumentException e) {
+				System.err.println("Usage: " + commandHelp[5]);
 			} catch (IOException e) {
 				System.err.println(e.getMessage());
 			}
@@ -88,7 +112,7 @@ public class Database
 	
 	private void create(String[] args) throws IllegalArgumentException, IOException
 	{
-		if (args.length < 2)
+		if (args.length != 2)
 			throw new IllegalArgumentException();
 		
 		if (args[1].contains("/") || args[1].contains("\\"))
@@ -108,7 +132,7 @@ public class Database
 	
 	private void focus(String[] args) throws IllegalArgumentException, IOException
 	{
-		if (args.length < 2)
+		if (args.length != 2)
 			throw new IllegalArgumentException();
 		
 		String fileName = "tables" + File.separator + args[1] + ".csv";
@@ -123,8 +147,11 @@ public class Database
 	
 	private void insert(String[] args) throws IllegalArgumentException, IOException
 	{
-		if (args.length < 5)
+		if (args.length < 5 || args.length > 12)
 			throw new IllegalArgumentException();
+		
+		if (writer == null)
+			throw new IOException("no active table found");
 		
 		int student_number;
 		
@@ -149,11 +176,45 @@ public class Database
 		}
 		
 		Student student = new Student(student_number, first_name, last_name, home_form, marks);
-		
-		if (writer == null)
-			throw new IOException("no active table found");
 	
 		writer.addStudent(student);
+	}
+	
+	private void delete(String[] args) throws IllegalArgumentException, IOException
+	{
+		// TODO
+	}
+	
+	private void show(String[] args) throws IllegalArgumentException, IOException
+	{
+		if (args.length > 3)
+			throw new IllegalArgumentException();
+		
+		if (reader == null)
+			throw new IOException("no active table found");
+		
+		reader.update();
+		
+		Student[] students;
+		if (args.length == 1) {
+			students = reader.getStudents();
+		} else {
+			int limit;
+			try {
+				limit = Integer.parseInt(args[1]);
+			} catch (NumberFormatException e) {
+				throw new IllegalArgumentException();
+			}
+			students = reader.getStudents(limit);
+		}
+		
+		for (Student s : students)
+			System.out.println(s.toString());
+	}
+	
+	private void find(String[] args) throws IllegalArgumentException, IOException
+	{
+		// TODO
 	}
 	
 	private void displayCommandHelp()

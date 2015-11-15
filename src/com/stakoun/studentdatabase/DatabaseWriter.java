@@ -37,7 +37,7 @@ public class DatabaseWriter
 		writer = new FileWriter(file, true);
 	}
 	
-	public void close() throws IOException
+	private void close() throws IOException
 	{
 		writer.flush();
 		writer.close();

@@ -35,10 +35,28 @@ public class DatabaseReader
 	
 	public Student[] getStudents(int limit)
 	{
+		if (limit > students.length)
+			return getStudents();
+		
 		Student[] subarray = new Student[limit];
 		for (int i = 0; i < limit; i++)
 			subarray[i] = students[i];
 		return subarray;
+	}
+	
+	public void update() throws IOException
+	{
+		int numStudents = getLineCount()-1;
+		if (numStudents < 0)
+			numStudents = 0;
+		open();
+		students = new Student[numStudents];
+		reader.readLine();
+		String line;
+		int i = 0;
+		while ((line = reader.readLine()) != null)
+			students[i++] = Student.fromCSV(line);
+		close();
 	}
 	
 	private int getLineCount() throws IOException
@@ -55,22 +73,7 @@ public class DatabaseReader
 		reader = new BufferedReader(new FileReader(file));
 	}
 	
-	private void update() throws IOException
-	{
-		int numStudents = getLineCount()-1;
-		if (numStudents < 0)
-			numStudents = 0;
-		open();
-		students = new Student[numStudents];
-		reader.readLine();
-		String line;
-		int i = 0;
-		while ((line = reader.readLine()) != null)
-			students[i++] = Student.fromCSV(line);
-		close();
-	}
-	
-	public void close() throws IOException
+	private void close() throws IOException
 	{
 		reader.close();
 	}
