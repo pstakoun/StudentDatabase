@@ -11,6 +11,7 @@ public class Student
 	private String last_name;
 	private String home_form;
 	private Course[] courses;
+	private Object sortBy;
 	
 	/**
 	 * The sole constructor for the Student class.
