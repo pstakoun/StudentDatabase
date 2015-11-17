@@ -4,14 +4,21 @@ package com.stakoun.studentdatabase;
  * The Student class represents a single student and contains all their information.
  * @author Peter Stakoun
  */
-public class Student
+public class Student implements Comparable
 {
+	public static enum SortBy
+	{
+		STUDENT_NUMBER, NAME, AVERAGE, HOME_FORM;
+	}
+	
+	private static SortBy sortBy;
+	
 	private int student_number;
 	private String first_name;
 	private String last_name;
 	private String home_form;
 	private Course[] courses;
-	private Object sortBy;
+	private int average;
 	
 	/**
 	 * The sole constructor for the Student class.
@@ -30,16 +37,41 @@ public class Student
 		this.courses = courses;
 	}
 	
-	public int getAverage()
+	private void setAverage()
 	{
 		if (courses.length == 0)
-			return 0;
+			return;
 		
 		int sum = 0;
 		for (Course c : courses)
 			sum += c.getMark();
 		
-		return sum/courses.length;
+		average = sum/courses.length;
+	}
+	
+	public int getStudentNumber()
+	{
+		return student_number;
+	}
+	
+	public String getFirstName()
+	{
+		return first_name;
+	}
+	
+	public String getLastName()
+	{
+		return last_name;
+	}
+
+	public String getHomeForm()
+	{
+		return home_form;
+	}
+	
+	public int getAverage()
+	{
+		return average;
 	}
 
 	public String toString()
@@ -102,6 +134,29 @@ public class Student
 		Student student = new Student(student_number, first_name, last_name, home_form, courses);
 		
 		return student;
+	}
+
+	public static void setSortBy(SortBy sb)
+	{
+		sortBy = sb;
+	}
+	
+	public static SortBy getSortBy()
+	{
+		return sortBy;
+	}
+	
+	public int compareTo(Object o)
+	{
+		Student that = (Student) o;
+		switch (sortBy) {
+		case STUDENT_NUMBER:
+			return this.getStudentNumber() - that.getStudentNumber();
+		case NAME:
+			return (this.getLastName()+this.getFirstName()).compareTo(that.getLastName()+that.getFirstName());
+		default:
+			return 0;
+		}
 	}
 
 }

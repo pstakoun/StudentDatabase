@@ -6,17 +6,17 @@ package com.stakoun.studentdatabase;
  */
 public class Sorter
 {
-	public Student[] sort(Student[] original)
+	public Comparable[] sort(Comparable[] original)
 	{
 		int len = original.length;
 
-		Student[] left = new Student[len/2];
+		Comparable[] left = new Comparable[len/2];
 		
-		Student[] right;
+		Comparable[] right;
 		if (len % 2 == 0)
-			right = new Student[len/2];
+			right = new Comparable[len/2];
 		else
-			right = new Student[len/2+1];
+			right = new Comparable[len/2+1];
 		
 		for (int i = 0; i < original.length/2; i++) {
 			left[i] = original[i];
@@ -29,14 +29,14 @@ public class Sorter
 		return merge(sort(left), sort(right));
 	}
 	
-	private Student[] merge(Student[] left, Student[] right)
+	private Comparable[] merge(Comparable[] left, Comparable[] right)
 	{
-		Student[] merged = new Student[left.length+right.length];
+		Comparable[] merged = new Comparable[left.length+right.length];
 		int leftI = 0;
 		int rightI = 0;
 		int i = 0;
 		while (i < merged.length) {
-			if (left[leftI].getAverage() <= right[rightI].getAverage() || rightI == right.length) { // TODO GENERALIZE
+			if (left[leftI].compareTo(right[rightI]) <= 0 || rightI == right.length) {
 				merged[i] = left[leftI];
 				leftI++;
 			} else {

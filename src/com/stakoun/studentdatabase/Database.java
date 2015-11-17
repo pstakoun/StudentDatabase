@@ -15,6 +15,7 @@ public class Database
 	private String input;
 	private DatabaseWriter writer;
 	private DatabaseReader reader;
+	private Student[] students;
 	
 	/**
 	 * The sole constructor for the Main class.
@@ -92,6 +93,14 @@ public class Database
 		} else if (args[0].equalsIgnoreCase("SHOW")) {
 			try {
 				show(args);
+			} catch (IllegalArgumentException e) {
+				System.err.println("Usage: " + commandHelp[4]);
+			} catch (IOException e) {
+				System.err.println(e.getMessage());
+			}
+		} else if (args[0].equalsIgnoreCase("SORT")) {
+			try {
+				sort(args);
 			} catch (IllegalArgumentException e) {
 				System.err.println("Usage: " + commandHelp[4]);
 			} catch (IOException e) {
@@ -213,6 +222,11 @@ public class Database
 		
 		for (Student s : students)
 			System.out.println(s.toString());
+	}
+	
+	private void sort(String[] args) throws IllegalArgumentException, IOException
+	{
+		// TODO
 	}
 	
 	private void find(String[] args) throws IllegalArgumentException, IOException
