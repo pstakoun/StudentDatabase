@@ -106,7 +106,7 @@ public class Database
 			try {
 				sort(args);
 			} catch (IllegalArgumentException e) {
-				System.err.println("Usage: " + commandHelp[4]);
+				System.err.println("Usage: " + commandHelp[5]);
 			} catch (IOException e) {
 				System.err.println(e.getMessage());
 			}
@@ -114,7 +114,7 @@ public class Database
 			try {
 				find(args);
 			} catch (IllegalArgumentException e) {
-				System.err.println("Usage: " + commandHelp[5]);
+				System.err.println("Usage: " + commandHelp[6]);
 			} catch (IOException e) {
 				System.err.println(e.getMessage());
 			}
