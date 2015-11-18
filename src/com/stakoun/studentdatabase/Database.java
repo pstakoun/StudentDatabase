@@ -32,7 +32,7 @@ public class Database
 				"INSERT student_number first_name last_name home_form [course1 mark1 ... course8 mark8]",
 				"DELETE condition",
 				"SHOW [max_entries]",
-				"SORT ['student_number'| 'name' | 'home_form' | 'average']",
+				"SORT [student_number | name | home_form | average]",
 				"FIND condition"
 		};
 		sorter = new Sorter();
