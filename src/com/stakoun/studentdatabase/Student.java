@@ -18,11 +18,11 @@ public class Student implements Comparable
 	private String last_name;
 	private String home_form;
 	private Course[] courses;
-	private int average;
+	private float average;
 	
 	/**
 	 * The sole constructor for the Student class.
-	 * @param marks
+	 * @param courses
 	 * @param home_form
 	 * @param last_name
 	 * @param first_name
@@ -35,6 +35,7 @@ public class Student implements Comparable
 		this.last_name = last_name;
 		this.home_form = home_form;
 		this.courses = courses;
+		setAverage();
 	}
 	
 	private void setAverage()
@@ -46,7 +47,7 @@ public class Student implements Comparable
 		for (Course c : courses)
 			sum += c.getMark();
 		
-		average = sum/courses.length;
+		average = (float) ((float)Math.round((sum/(float)courses.length) * 10.0) / 10.0);
 	}
 	
 	public int getStudentNumber()
@@ -69,7 +70,7 @@ public class Student implements Comparable
 		return home_form;
 	}
 	
-	public int getAverage()
+	public float getAverage()
 	{
 		return average;
 	}
@@ -148,12 +149,20 @@ public class Student implements Comparable
 	
 	public int compareTo(Object o)
 	{
+		if (sortBy == null)
+			return 0;
+		
 		Student that = (Student) o;
+		
 		switch (sortBy) {
 		case STUDENT_NUMBER:
 			return this.getStudentNumber() - that.getStudentNumber();
 		case NAME:
-			return (this.getLastName()+this.getFirstName()).compareTo(that.getLastName()+that.getFirstName());
+			return ((this.getLastName().compareTo(that.getLastName()) == 0) ? this.getFirstName().compareTo(that.getFirstName()) : this.getLastName().compareTo(that.getLastName()));
+		case AVERAGE:
+			return -Float.compare(this.getAverage(), that.getAverage());
+		case HOME_FORM:
+			return this.getHomeForm().compareTo(that.getHomeForm());
 		default:
 			return 0;
 		}

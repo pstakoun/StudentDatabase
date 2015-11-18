@@ -4,6 +4,8 @@ import java.io.File;
 import java.io.IOException;
 import java.util.Scanner;
 
+import com.stakoun.studentdatabase.Student.SortBy;
+
 /**
  * The Main class initializes the database configuration and controls program flow.
  * @author Peter Stakoun
@@ -12,6 +14,7 @@ public class Database
 {
 	private Scanner inputScanner;
 	private String[] commandHelp;
+	private Sorter sorter;
 	private String input;
 	private DatabaseWriter writer;
 	private DatabaseReader reader;
@@ -32,6 +35,7 @@ public class Database
 				"SORT ['student_number'| 'name' | 'home_form' | 'average']",
 				"FIND condition"
 		};
+		sorter = new Sorter();
 		getUserInput();
 	}
 
@@ -50,7 +54,7 @@ public class Database
 		do {
 			input = inputScanner.nextLine();
 			handleInput();
-		} while (!input.equalsIgnoreCase("exit"));
+		} while (true);
 	}
 
 	private void handleInput()
@@ -152,6 +156,8 @@ public class Database
 		
 		writer = new DatabaseWriter(file);
 		reader = new DatabaseReader(file);
+		
+		students = reader.readStudents();
 	}
 	
 	private void insert(String[] args) throws IllegalArgumentException, IOException
@@ -199,39 +205,89 @@ public class Database
 	
 	private void show(String[] args) throws IllegalArgumentException, IOException
 	{
-		if (args.length > 3)
+		if (args.length > 2)
 			throw new IllegalArgumentException();
 		
 		if (reader == null)
 			throw new IOException("no active table found");
+
+		students = reader.readStudents();
 		
-		reader.update();
-		
-		Student[] students;
-		if (args.length == 1) {
-			students = reader.getStudents();
-		} else {
+		if (args.length != 1) {
 			int limit;
 			try {
 				limit = Integer.parseInt(args[1]);
 			} catch (NumberFormatException e) {
 				throw new IllegalArgumentException();
 			}
-			students = reader.getStudents(limit);
+			showStudents(limit);
+		} else {
+			showStudents();
 		}
-		
-		for (Student s : students)
-			System.out.println(s.toString());
 	}
 	
 	private void sort(String[] args) throws IllegalArgumentException, IOException
 	{
-		// TODO
+		if (args.length > 2)
+			throw new IllegalArgumentException();
+		
+		if (writer == null)
+			throw new IOException("no active table found");
+		
+		if (args.length > 1)
+			Student.setSortBy(getSortByFromString(args[1]));
+		else
+			Student.setSortBy(SortBy.STUDENT_NUMBER);
+		
+		Comparable[] sorted = sorter.sort(students);
+		for (int i = 0; i < students.length; i++)
+		{
+			students[i] = (Student) sorted[i];
+		}
+		
+		writer.overwrite(students);
 	}
-	
+
 	private void find(String[] args) throws IllegalArgumentException, IOException
 	{
 		// TODO
+	}
+	
+	private void showStudents()
+	{
+		for (Student s : students)
+			System.out.println(s.toString());
+	}
+	
+	private void showStudents(int limit)
+	{
+		Student[] arr = getStudentsWithLimit(limit);
+		for (Student s : arr)
+			System.out.println(s.toString());
+	}
+	
+	private Student[] getStudentsWithLimit(int limit)
+	{
+		if (limit > students.length)
+			return students;
+		
+		Student[] subarray = new Student[limit];
+		for (int i = 0; i < limit; i++)
+			subarray[i] = students[i];
+		return subarray;
+	}
+	
+	private SortBy getSortByFromString(String s)
+	{
+		if (s.equalsIgnoreCase("student_number"))
+			return SortBy.STUDENT_NUMBER;
+		else if (s.equalsIgnoreCase("name"))
+			return SortBy.NAME;
+		else if (s.equalsIgnoreCase("home_form"))
+			return SortBy.HOME_FORM;
+		else if (s.equalsIgnoreCase("average"))
+			return SortBy.AVERAGE;
+		return null;
 	}
 	
 	private void displayCommandHelp()

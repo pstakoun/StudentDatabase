@@ -32,6 +32,15 @@ public class DatabaseWriter
 		close();
 	}
 	
+	public void overwrite(Student[] students) throws IOException
+	{
+		initFile(file);
+		open();
+		for (Student s : students)
+			writer.append(s.toCSV());
+		close();
+	}
+	
 	private void open() throws IOException
 	{
 		writer = new FileWriter(file, true);

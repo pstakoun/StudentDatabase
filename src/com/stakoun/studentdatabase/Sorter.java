@@ -9,6 +9,9 @@ public class Sorter
 	public Comparable[] sort(Comparable[] original)
 	{
 		int len = original.length;
+		
+		if (len < 2)
+			return original;
 
 		Comparable[] left = new Comparable[len/2];
 		
@@ -36,13 +39,14 @@ public class Sorter
 		int rightI = 0;
 		int i = 0;
 		while (i < merged.length) {
-			if (left[leftI].compareTo(right[rightI]) <= 0 || rightI == right.length) {
-				merged[i] = left[leftI];
-				leftI++;
-			} else {
-				merged[i] = right[rightI];
-				rightI++;
-			}
+			if (rightI == right.length && leftI != left.length)
+				merged[i] = left[leftI++];
+			else if (leftI == left.length && rightI != right.length)
+				merged[i] = right[rightI++];
+			else if (left[leftI].compareTo(right[rightI]) <= 0)
+				merged[i] = left[leftI++];
+			else
+				merged[i] = right[rightI++];
 			i++;
 		}
 		return merged;

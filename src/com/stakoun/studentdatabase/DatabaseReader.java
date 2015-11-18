@@ -14,7 +14,6 @@ public class DatabaseReader
 	private static final String sep = ",";
 	private File file;
 	private BufferedReader reader;
-	private Student[] students;
 	
 	/**
 	 * The sole constructor for the DatabaseReader class.
@@ -24,39 +23,24 @@ public class DatabaseReader
 	public DatabaseReader(File file) throws IOException
 	{
 		this.file = file;
-		students = new Student[getLineCount()];
-		update();
 	}
 	
-	public Student[] getStudents()
-	{
-		return students;
-	}
-	
-	public Student[] getStudents(int limit)
-	{
-		if (limit > students.length)
-			return getStudents();
-		
-		Student[] subarray = new Student[limit];
-		for (int i = 0; i < limit; i++)
-			subarray[i] = students[i];
-		return subarray;
-	}
-	
-	public void update() throws IOException
+	public Student[] readStudents() throws IOException
 	{
 		int numStudents = getLineCount()-1;
 		if (numStudents < 0)
 			numStudents = 0;
+		
 		open();
-		students = new Student[numStudents];
+		Student[] students = new Student[numStudents];
 		reader.readLine();
 		String line;
 		int i = 0;
 		while ((line = reader.readLine()) != null)
 			students[i++] = Student.fromCSV(line);
 		close();
+		
+		return students;
 	}
 	
 	private int getLineCount() throws IOException
