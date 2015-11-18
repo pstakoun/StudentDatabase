@@ -6,7 +6,7 @@ import java.io.FileReader;
 import java.io.IOException;
 
 /**
- * The DatabaseReader class ... TODO
+ * The DatabaseReader class reads Student information from the Database.
  * @author Peter Stakoun
  */
 public class DatabaseReader

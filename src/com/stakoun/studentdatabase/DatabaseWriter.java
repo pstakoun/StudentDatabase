@@ -5,7 +5,7 @@ import java.io.FileWriter;
 import java.io.IOException;
 
 /**
- * The DatabaseWriter class ... TODO
+ * The DatabaseWriter class writes Student information to the Database.
  * @author Peter Stakoun
  */
 public class DatabaseWriter
