@@ -160,7 +160,7 @@ public class Student implements Comparable
 		case NAME:
 			return ((this.getLastName().compareTo(that.getLastName()) == 0) ? this.getFirstName().compareTo(that.getFirstName()) : this.getLastName().compareTo(that.getLastName()));
 		case AVERAGE:
-			return -Float.compare(this.getAverage(), that.getAverage());
+			return Float.compare(that.getAverage(), this.getAverage());
 		case HOME_FORM:
 			return this.getHomeForm().compareTo(that.getHomeForm());
 		default:
