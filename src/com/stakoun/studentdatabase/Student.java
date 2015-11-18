@@ -1,17 +1,14 @@
 package com.stakoun.studentdatabase;
 
+import com.stakoun.studentdatabase.Database.Field;
+
 /**
  * The Student class represents a single student and contains all their information.
  * @author Peter Stakoun
  */
 public class Student implements Comparable
 {
-	public static enum SortBy
-	{
-		STUDENT_NUMBER, NAME, AVERAGE, HOME_FORM;
-	}
-	
-	private static SortBy sortBy;
+	private static Field sortBy;
 	
 	private int student_number;
 	private String first_name;
@@ -137,12 +134,12 @@ public class Student implements Comparable
 		return student;
 	}
 
-	public static void setSortBy(SortBy sb)
+	public static void setSortBy(Field sb)
 	{
 		sortBy = sb;
 	}
 	
-	public static SortBy getSortBy()
+	public static Field getSortBy()
 	{
 		return sortBy;
 	}

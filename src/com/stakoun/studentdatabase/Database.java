@@ -4,14 +4,17 @@ import java.io.File;
 import java.io.IOException;
 import java.util.Scanner;
 
-import com.stakoun.studentdatabase.Student.SortBy;
-
 /**
  * The Main class initializes the database configuration and controls program flow.
  * @author Peter Stakoun
  */
 public class Database
 {
+	public static enum Field
+	{
+		STUDENT_NUMBER, NAME, AVERAGE, HOME_FORM;
+	}
+	
 	private Scanner inputScanner;
 	private String[] commandHelp;
 	private Sorter sorter;
@@ -235,9 +238,9 @@ public class Database
 			throw new IOException("no active table found");
 		
 		if (args.length > 1)
-			Student.setSortBy(getSortByFromString(args[1]));
+			Student.setSortBy(getFieldFromString(args[1]));
 		else
-			Student.setSortBy(SortBy.STUDENT_NUMBER);
+			Student.setSortBy(Field.STUDENT_NUMBER);
 		
 		Comparable[] sorted = sorter.sort(students);
 		for (int i = 0; i < students.length; i++)
@@ -251,6 +254,17 @@ public class Database
 	private void find(String[] args) throws IllegalArgumentException, IOException
 	{
 		// TODO
+	}
+	
+	private void getWhere(String[] args)
+	{
+		Field field;
+		for (int i = 1; i < args.length; i++) {
+			Field f;
+			if ((f = getFieldFromString(args[i])) != null) {
+				// TODO
+			}
+		}
 	}
 	
 	private void showStudents()
@@ -277,16 +291,16 @@ public class Database
 		return subarray;
 	}
 	
-	private SortBy getSortByFromString(String s)
+	private Field getFieldFromString(String s)
 	{
 		if (s.equalsIgnoreCase("student_number"))
-			return SortBy.STUDENT_NUMBER;
+			return Field.STUDENT_NUMBER;
 		else if (s.equalsIgnoreCase("name"))
-			return SortBy.NAME;
+			return Field.NAME;
 		else if (s.equalsIgnoreCase("home_form"))
-			return SortBy.HOME_FORM;
+			return Field.HOME_FORM;
 		else if (s.equalsIgnoreCase("average"))
-			return SortBy.AVERAGE;
+			return Field.AVERAGE;
 		return null;
 	}
 	
