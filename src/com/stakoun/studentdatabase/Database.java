@@ -12,7 +12,7 @@ public class Database
 {
 	public static enum Field
 	{
-		STUDENT_NUMBER, NAME, AVERAGE, HOME_FORM;
+		STUDENT_NUMBER, FIRST_NAME, LAST_NAME, NAME, AVERAGE, HOME_FORM
 	}
 	
 	private Scanner inputScanner;
@@ -253,20 +253,39 @@ public class Database
 
 	private void find(String[] args) throws IllegalArgumentException, IOException
 	{
-		// TODO
+		if (args.length < 4)
+			throw new IllegalArgumentException();
+		String[] query = new String[] {args[1], args[2], args[3]};
+		showStudents(getWhere(query));
 	}
 	
-	private void getWhere(String[] args)
+	private Student[] getWhere(String[] args) throws IllegalArgumentException
 	{
+		if (args.length != 3)
+			throw new IllegalArgumentException();
+		
 		Field field;
 		Comparison comp;
-		for (int i = 1; i < args.length; i++) {
-			Field f;
-			Comparison c;
-			if ((f = getFieldFromString(args[i])) != null) {
-				// TODO
-			}
-		}
+		String value;
+		
+		if ((field = getFieldFromString(args[0])) == null)
+			return null;
+		if ((comp = getComparisonFromString(args[1])) == null)
+			return null;
+		value = args[2];
+		
+		int count = 0;
+		for (Student s : students)
+			if (comp.compare(s.getValueOfField(field), value))
+				count++;
+		
+		Student[] subarray = new Student[count];
+		int i = 0;
+		for (Student s : students)
+			if (comp.compare(s.getValueOfField(field), value))
+				subarray[i++] = s;
+		
+		return subarray;
 	}
 	
 	private void showStudents()
@@ -279,6 +298,12 @@ public class Database
 	{
 		Student[] arr = getStudentsWithLimit(limit);
 		for (Student s : arr)
+			System.out.println(s.toString());
+	}
+	
+	private void showStudents(Student[] stdnts)
+	{
+		for (Student s : stdnts)
 			System.out.println(s.toString());
 	}
 	
@@ -297,12 +322,23 @@ public class Database
 	{
 		if (s.equalsIgnoreCase("student_number"))
 			return Field.STUDENT_NUMBER;
+		else if (s.equalsIgnoreCase("first_name"))
+			return Field.FIRST_NAME;
+		else if (s.equalsIgnoreCase("last_name"))
+			return Field.LAST_NAME;
 		else if (s.equalsIgnoreCase("name"))
 			return Field.NAME;
 		else if (s.equalsIgnoreCase("home_form"))
 			return Field.HOME_FORM;
 		else if (s.equalsIgnoreCase("average"))
 			return Field.AVERAGE;
+		return null;
+	}
+	
+	private Comparison getComparisonFromString(String s)
+	{
+		if (s.equals("=") || s.equals(">") || s.equals("<") || s.equals(">=") || s.equals("<="))
+			return new Comparison(s);
 		return null;
 	}
 	

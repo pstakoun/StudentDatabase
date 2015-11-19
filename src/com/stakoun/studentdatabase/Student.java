@@ -71,6 +71,21 @@ public class Student implements Comparable
 	{
 		return average;
 	}
+	
+	public String getValueOfField(Field field)
+	{
+		if (field == Field.STUDENT_NUMBER)
+			return String.valueOf(student_number);
+		if (field == Field.FIRST_NAME)
+			return first_name;
+		if (field == Field.LAST_NAME)
+			return last_name;
+		if (field == Field.HOME_FORM)
+			return home_form;
+		if (field == Field.AVERAGE)
+			return String.valueOf(average);
+		return null;
+	}
 
 	public String toString()
 	{
