@@ -259,8 +259,10 @@ public class Database
 	private void getWhere(String[] args)
 	{
 		Field field;
+		Comparison comp;
 		for (int i = 1; i < args.length; i++) {
 			Field f;
+			Comparison c;
 			if ((f = getFieldFromString(args[i])) != null) {
 				// TODO
 			}
