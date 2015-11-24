@@ -203,7 +203,10 @@ public class Database
 	
 	private void delete(String[] args) throws IllegalArgumentException, IOException
 	{
-		// TODO
+		if (args.length < 4)
+			throw new IllegalArgumentException();
+		String[] query = new String[] {args[1], args[2], args[3]};
+		deleteWhere(query);
 	}
 	
 	private void show(String[] args) throws IllegalArgumentException, IOException
@@ -259,6 +262,45 @@ public class Database
 		showStudents(getWhere(query));
 	}
 	
+	private void deleteWhere(String[] args) throws IllegalArgumentException, IOException
+	{
+		if (args.length != 3)
+			throw new IllegalArgumentException();
+		
+		if (writer == null)
+			throw new IOException("no active table found");
+		
+		Field field;
+		Comparison comp;
+		String value;
+		
+		if ((field = getFieldFromString(args[0])) == null)
+			return;
+		if ((comp = getComparisonFromString(args[1])) == null)
+			return;
+		value = args[2];
+		
+		int count = 0;
+		for (int i = 0; i < students.length; i++) {
+			String v;
+			if ((v = students[i].getValueOfField(field)) == null) break;
+			if (comp.compare(v, value)) {
+				students[i] = null;
+				count++;
+			}
+		}
+		
+		Student[] subarray = new Student[students.length-count];
+		int i = 0;
+		for (Student s : students)
+			if (s != null)
+				subarray[i++] = s;
+		
+		students = subarray;
+		
+		writer.overwrite(students);
+	}
+	
 	private Student[] getWhere(String[] args) throws IllegalArgumentException
 	{
 		if (args.length != 3)
@@ -275,15 +317,23 @@ public class Database
 		value = args[2];
 		
 		int count = 0;
-		for (Student s : students)
-			if (comp.compare(s.getValueOfField(field), value))
+		for (Student s : students) {
+			String v;
+			if ((v = s.getValueOfField(field)) == null) break;
+			if (comp.compare(v, value)) {
 				count++;
+			}
+		}
 		
 		Student[] subarray = new Student[count];
 		int i = 0;
-		for (Student s : students)
-			if (comp.compare(s.getValueOfField(field), value))
+		for (Student s : students) {
+			String v;
+			if ((v = s.getValueOfField(field)) == null) break;
+			if (comp.compare(v, value)) {
 				subarray[i++] = s;
+			}
+		}
 		
 		return subarray;
 	}
